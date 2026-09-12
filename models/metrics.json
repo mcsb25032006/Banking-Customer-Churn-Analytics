@@ -1,0 +1,169 @@
+{
+  "champion_model": "XGBoost",
+  "optimal_threshold": 0.6,
+  "trained_at": "2026-09-12T19:28:54.972197",
+  "benchmark_comparison": {
+    "Logistic_Regression": {
+      "cv_roc_auc_mean": 0.7678,
+      "cv_roc_auc_std": 0.0209,
+      "test_default_threshold": {
+        "threshold": 0.5,
+        "roc_auc": 0.7786,
+        "pr_auc": 0.4966,
+        "accuracy": 0.71,
+        "precision": 0.3881,
+        "recall": 0.7371,
+        "f1": 0.5085,
+        "brier_score": 0.1945,
+        "confusion_matrix": {
+          "true_negatives": 1120,
+          "false_positives": 473,
+          "false_negatives": 107,
+          "true_positives": 300
+        }
+      },
+      "test_optimal_threshold": {
+        "threshold": 0.577,
+        "roc_auc": 0.7786,
+        "pr_auc": 0.4966,
+        "accuracy": 0.765,
+        "precision": 0.444,
+        "recall": 0.6143,
+        "f1": 0.5155,
+        "brier_score": 0.1945,
+        "confusion_matrix": {
+          "true_negatives": 1280,
+          "false_positives": 313,
+          "false_negatives": 157,
+          "true_positives": 250
+        }
+      }
+    },
+    "Random_Forest": {
+      "cv_roc_auc_mean": 0.8546,
+      "cv_roc_auc_std": 0.0123,
+      "test_default_threshold": {
+        "threshold": 0.5,
+        "roc_auc": 0.8564,
+        "pr_auc": 0.6932,
+        "accuracy": 0.815,
+        "precision": 0.5348,
+        "recall": 0.6978,
+        "f1": 0.6055,
+        "brier_score": 0.1335,
+        "confusion_matrix": {
+          "true_negatives": 1346,
+          "false_positives": 247,
+          "false_negatives": 123,
+          "true_positives": 284
+        }
+      },
+      "test_optimal_threshold": {
+        "threshold": 0.577,
+        "roc_auc": 0.8564,
+        "pr_auc": 0.6932,
+        "accuracy": 0.8495,
+        "precision": 0.6312,
+        "recall": 0.6265,
+        "f1": 0.6289,
+        "brier_score": 0.1335,
+        "confusion_matrix": {
+          "true_negatives": 1444,
+          "false_positives": 149,
+          "false_negatives": 152,
+          "true_positives": 255
+        }
+      }
+    },
+    "LightGBM": {
+      "cv_roc_auc_mean": 0.855,
+      "cv_roc_auc_std": 0.014,
+      "test_default_threshold": {
+        "threshold": 0.5,
+        "roc_auc": 0.8589,
+        "pr_auc": 0.7044,
+        "accuracy": 0.8125,
+        "precision": 0.5287,
+        "recall": 0.7248,
+        "f1": 0.6114,
+        "brier_score": 0.1316,
+        "confusion_matrix": {
+          "true_negatives": 1330,
+          "false_positives": 263,
+          "false_negatives": 112,
+          "true_positives": 295
+        }
+      },
+      "test_optimal_threshold": {
+        "threshold": 0.6,
+        "roc_auc": 0.8589,
+        "pr_auc": 0.7044,
+        "accuracy": 0.844,
+        "precision": 0.6092,
+        "recall": 0.6511,
+        "f1": 0.6295,
+        "brier_score": 0.1316,
+        "confusion_matrix": {
+          "true_negatives": 1423,
+          "false_positives": 170,
+          "false_negatives": 142,
+          "true_positives": 265
+        }
+      }
+    },
+    "XGBoost": {
+      "cv_roc_auc_mean": 0.8565,
+      "cv_roc_auc_std": 0.013,
+      "test_default_threshold": {
+        "threshold": 0.5,
+        "roc_auc": 0.8668,
+        "pr_auc": 0.7158,
+        "accuracy": 0.807,
+        "precision": 0.5179,
+        "recall": 0.7445,
+        "f1": 0.6109,
+        "brier_score": 0.1348,
+        "confusion_matrix": {
+          "true_negatives": 1311,
+          "false_positives": 282,
+          "false_negatives": 104,
+          "true_positives": 303
+        }
+      },
+      "test_optimal_threshold": {
+        "threshold": 0.6,
+        "roc_auc": 0.8668,
+        "pr_auc": 0.7158,
+        "accuracy": 0.844,
+        "precision": 0.6058,
+        "recall": 0.6683,
+        "f1": 0.6355,
+        "brier_score": 0.1348,
+        "confusion_matrix": {
+          "true_negatives": 1416,
+          "false_positives": 177,
+          "false_negatives": 135,
+          "true_positives": 272
+        }
+      }
+    }
+  },
+  "feature_importances": {
+    "NumOfProducts": 0.194,
+    "Age": 0.1578,
+    "IsActiveMember": 0.1375,
+    "IsZeroBalance": 0.126,
+    "Geography_Germany": 0.0806,
+    "Gender_Male": 0.0482,
+    "Balance": 0.0428,
+    "BalanceSalaryRatio": 0.0388,
+    "Geography_Spain": 0.032,
+    "CreditScoreAgeRatio": 0.0254,
+    "ProductsPerTenure": 0.0229,
+    "TenureAgeRatio": 0.022,
+    "EstimatedSalary": 0.021,
+    "CreditScore": 0.021,
+    "Tenure": 0.0197,
+    "HasCrCard": 0.0104
+  }
+}

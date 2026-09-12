@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banking Customer Churn Analytics Platform</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .tab-active { border-bottom: 2px solid #2563eb; color: #1d4ed8; font-weight: 600; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen">
+  <!-- Top Navigation -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+          B
+        </div>
+        <div>
+          <h1 class="text-base font-bold text-slate-900 leading-tight">Banking Churn Analytics</h1>
+          <p class="text-xs text-slate-500">Predictive Analytics, SQL Engine & Machine Learning Microservice</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span id="health-badge" class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+          <span class="w-2 h-2 mr-1.5 rounded-full bg-green-500 animate-pulse"></span>
+          System Online
+        </span>
+        <a href="/docs" target="_blank" class="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center bg-blue-50 px-3 py-1.5 rounded-md border border-blue-200 transition">
+          Swagger API Docs
+          <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <!-- Navigation Tabs -->
+    <div class="border-b border-slate-200 mb-6 flex space-x-8">
+      <button onclick="switchTab('overview')" id="tab-btn-overview" class="py-3 px-1 text-sm tab-active transition">
+        Executive Dashboard
+      </button>
+      <button onclick="switchTab('predictor')" id="tab-btn-predictor" class="py-3 px-1 text-sm text-slate-500 hover:text-slate-700 transition">
+        Real-Time Churn Predictor
+      </button>
+      <button onclick="switchTab('sql')" id="tab-btn-sql" class="py-3 px-1 text-sm text-slate-500 hover:text-slate-700 transition">
+        SQL Analytics Engine
+      </button>
+      <button onclick="switchTab('models')" id="tab-btn-models" class="py-3 px-1 text-sm text-slate-500 hover:text-slate-700 transition">
+        Model Benchmarks & ML Specs
+      </button>
+    </div>
+
+    <!-- TAB 1: EXECUTIVE DASHBOARD -->
+    <div id="tab-overview" class="space-y-6">
+      <!-- KPI Metric Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Customer Base</p>
+          <div class="mt-2 flex items-baseline justify-between">
+            <h3 class="text-2xl font-bold text-slate-900" id="kpi-total-cust">--</h3>
+            <span class="text-xs bg-slate-100 text-slate-700 px-2 py-0.5 rounded">100%</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">Total active & inactive accounts</p>
+        </div>
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Overall Churn Rate</p>
+          <div class="mt-2 flex items-baseline justify-between">
+            <h3 class="text-2xl font-bold text-rose-600" id="kpi-churn-rate">--%</h3>
+            <span class="text-xs bg-rose-50 text-rose-700 px-2 py-0.5 rounded font-medium">Critical KPI</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1"><span id="kpi-churned-count">--</span> churned customers</p>
+        </div>
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Retained Customers</p>
+          <div class="mt-2 flex items-baseline justify-between">
+            <h3 class="text-2xl font-bold text-emerald-600" id="kpi-retained-rate">--%</h3>
+            <span class="text-xs bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-medium">Healthy</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1"><span id="kpi-retained-count">--</span> retained customers</p>
+        </div>
+        <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm">
+          <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Active Member Ratio</p>
+          <div class="mt-2 flex items-baseline justify-between">
+            <h3 class="text-2xl font-bold text-blue-600" id="kpi-active-rate">--%</h3>
+            <span class="text-xs bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-medium">Engagement</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-1"><span id="kpi-active-count">--</span> active members</p>
+        </div>
+      </div>
+
+      <!-- Charts Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Geography Churn Chart -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <h4 class="text-sm font-bold text-slate-900 mb-1">Churn Rate by Geography</h4>
+          <p class="text-xs text-slate-500 mb-4">Comparison across European markets</p>
+          <div class="h-60">
+            <canvas id="geoChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Age Group Churn Chart -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <h4 class="text-sm font-bold text-slate-900 mb-1">Churn Rate by Age Group</h4>
+          <p class="text-xs text-slate-500 mb-4">Higher attrition in 45-65 demographics</p>
+          <div class="h-60">
+            <canvas id="ageChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Product Count Churn Chart -->
+        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+          <h4 class="text-sm font-bold text-slate-900 mb-1">Churn Rate by Product Count</h4>
+          <p class="text-xs text-slate-500 mb-4">Severe churn spikes on 3+ banking products</p>
+          <div class="h-60">
+            <canvas id="productChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: REAL-TIME CHURN PREDICTOR -->
+    <div id="tab-predictor" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Input Form (7 cols) -->
+        <div class="lg:col-span-7 bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+          <div class="flex justify-between items-center mb-4">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">Customer Profile Parameters</h3>
+              <p class="text-xs text-slate-500">Adjust attributes to score churn probability</p>
+            </div>
+            <!-- Preset Buttons -->
+            <div class="flex space-x-2">
+              <button onclick="applyPreset('german_high')" class="text-xs bg-rose-50 text-rose-700 px-2.5 py-1 rounded border border-rose-200 hover:bg-rose-100 transition">
+                High-Risk German Profile
+              </button>
+              <button onclick="applyPreset('french_loyal')" class="text-xs bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded border border-emerald-200 hover:bg-emerald-100 transition">
+                Loyal French Profile
+              </button>
+            </div>
+          </div>
+
+          <form id="prediction-form" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Credit Score (300 - 850)</label>
+                <input type="number" id="inp-credit" min="300" max="850" value="650" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Geography</label>
+                <select id="inp-geo" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                  <option value="France">France</option>
+                  <option value="Germany" selected>Germany</option>
+                  <option value="Spain">Spain</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Gender</label>
+                <select id="inp-gender" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                  <option value="Female">Female</option>
+                  <option value="Male">Male</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Age (Years)</label>
+                <input type="number" id="inp-age" min="18" max="100" value="48" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Tenure with Bank (Years)</label>
+                <input type="number" id="inp-tenure" min="0" max="10" value="3" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Account Balance ($)</label>
+                <input type="number" id="inp-balance" min="0" step="500" value="115000" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Number of Products (1 - 4)</label>
+                <select id="inp-products" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                  <option value="1" selected>1 Product</option>
+                  <option value="2">2 Products</option>
+                  <option value="3">3 Products</option>
+                  <option value="4">4 Products</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Credit Card Holder</label>
+                <select id="inp-card" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                  <option value="1" selected>Yes (Holds Card)</option>
+                  <option value="0">No Card</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Activity Status</label>
+                <select id="inp-active" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                  <option value="1">Active Member</option>
+                  <option value="0" selected>Inactive Member</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Estimated Annual Salary ($)</label>
+                <input type="number" id="inp-salary" min="0" step="1000" value="95000" class="w-full text-sm px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              </div>
+            </div>
+
+            <div class="pt-2">
+              <button type="button" onclick="submitPrediction()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-lg shadow transition flex justify-center items-center">
+                <span id="pred-btn-text">Score Customer Churn Risk</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Prediction Results Card (5 cols) -->
+        <div class="lg:col-span-5 bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <h3 class="text-base font-bold text-slate-900 mb-1">Predictive Risk Assessment</h3>
+            <p class="text-xs text-slate-500 mb-4">Inference generated via XGBoost Pipeline</p>
+
+            <!-- Probability Gauge Display -->
+            <div class="text-center py-4 bg-slate-50 rounded-xl border border-slate-100 mb-4">
+              <p class="text-xs font-semibold text-slate-500 uppercase">Estimated Churn Probability</p>
+              <div class="text-4xl font-extrabold text-slate-900 mt-1" id="res-prob-pct">--%</div>
+              <div class="mt-2">
+                <span id="res-risk-tier" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-200 text-slate-700">
+                  Ready to score
+                </span>
+              </div>
+            </div>
+
+            <!-- Risk Factors -->
+            <div class="mb-4">
+              <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Key Driving Risk Factors</h4>
+              <ul id="res-risk-factors" class="text-xs text-slate-600 space-y-1.5 list-disc list-inside">
+                <li class="text-slate-400 list-none">Submit profile parameters to compute local risk drivers.</li>
+              </ul>
+            </div>
+
+            <!-- Recommended Retention Strategy -->
+            <div class="bg-blue-50 border border-blue-100 rounded-lg p-3">
+              <h4 class="text-xs font-bold text-blue-900 mb-1" id="res-strategy-title">Prescriptive Retention Action</h4>
+              <ul id="res-strategy-steps" class="text-xs text-blue-800 space-y-1 list-disc list-inside">
+                <li class="list-none text-blue-600">Action plan will appear here.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="pt-4 text-center border-t border-slate-100 text-[11px] text-slate-400">
+            Decision threshold: <span id="res-threshold">0.60</span> | Calibrated for recall optimization
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: SQL ANALYTICS ENGINE -->
+    <div id="tab-sql" class="hidden space-y-6">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div>
+            <h3 class="text-base font-bold text-slate-900">SQL Analytics Query Runner</h3>
+            <p class="text-xs text-slate-500">Execute structured business queries against the 10,000-customer churn database</p>
+          </div>
+          <div class="flex items-center space-x-3">
+            <select id="sql-query-select" class="text-xs px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+              <option value="executive_kpis">Q1-10: Executive Churn Overview</option>
+              <option value="churn_by_geography">Q11-17: Geography Churn Breakdown</option>
+              <option value="churn_by_gender">Q18-19: Gender Churn Analysis</option>
+              <option value="churn_by_age_group">Q21-23: Age Group Churn Stratification</option>
+              <option value="churn_by_products">Q26-30: Product Usage & Saturation</option>
+              <option value="churn_by_activity">Q31-36: Engagement & Activity Status</option>
+              <option value="high_risk_segments">Q64-67: Multi-Dimensional Window Ranking (CTE)</option>
+            </select>
+            <button onclick="runSelectedSql()" class="text-xs bg-slate-900 hover:bg-slate-800 text-white font-semibold px-4 py-2 rounded-lg transition shadow-sm">
+              Execute Query
+            </button>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center text-xs text-slate-500 mb-2">
+          <span>Results (<span id="sql-row-count">0</span> rows returned)</span>
+          <span id="sql-bench" class="font-mono bg-slate-100 px-2 py-0.5 rounded">Latency: -- ms</span>
+        </div>
+
+        <!-- Table Container -->
+        <div class="overflow-x-auto border border-slate-200 rounded-lg">
+          <table class="min-w-full divide-y divide-slate-200 text-xs text-left" id="sql-table">
+            <thead class="bg-slate-50 text-slate-700 uppercase font-semibold" id="sql-thead">
+              <tr><th class="px-4 py-3">Select a query above to inspect SQL results</th></tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 bg-white" id="sql-tbody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: MODEL BENCHMARKS -->
+    <div id="tab-models" class="hidden space-y-6">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+        <h3 class="text-base font-bold text-slate-900 mb-1">Model Architecture & Comparative Benchmarks</h3>
+        <p class="text-xs text-slate-500 mb-6">Cross-validated evaluation of candidate algorithms on stratified test split (2,000 customers)</p>
+
+        <!-- Benchmark Comparison Table -->
+        <div class="overflow-x-auto border border-slate-200 rounded-lg mb-8">
+          <table class="min-w-full divide-y divide-slate-200 text-xs text-left" id="benchmarks-table">
+            <thead class="bg-slate-50 text-slate-700 uppercase font-semibold">
+              <tr>
+                <th class="px-4 py-3">Model</th>
+                <th class="px-4 py-3">CV ROC-AUC</th>
+                <th class="px-4 py-3">Test ROC-AUC</th>
+                <th class="px-4 py-3">Test PR-AUC</th>
+                <th class="px-4 py-3">Precision</th>
+                <th class="px-4 py-3">Recall</th>
+                <th class="px-4 py-3">Tuned F1</th>
+                <th class="px-4 py-3">Brier Score</th>
+                <th class="px-4 py-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 bg-white" id="benchmarks-tbody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Feature Importances -->
+        <h4 class="text-sm font-bold text-slate-900 mb-2">Global Feature Importances (Champion XGBoost)</h4>
+        <div class="h-72">
+          <canvas id="importanceChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: banking-churn-analytics
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=production
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - DATABASE_URL=sqlite:///data/churn.db
+      - MODEL_PATH=models/churn_model.joblib
+      - METRICS_PATH=models/metrics.json
+      - RAW_DATA_PATH=Churn_Modelling.csv
+      - LOG_LEVEL=INFO
+    volumes:
+      - ./data:/app/data
+      - ./models:/app/models
+    restart: unless-stopped
